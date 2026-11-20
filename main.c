@@ -10,21 +10,39 @@ int main(int argc, char *argv[]) {
 
 	FILE *file = fopen(argv[1], "rb");
 	if (file == NULL) {
-		printf("File Not Found\n");
+		perror("fopen");
 		return 0;
 	}
 
-	int c;
+	size_t bytes_read;
+	size_t offset = 0;
+	unsigned char buffer[16];
 
-	while ((c = fgetc(file)) != EOF) {
-		if (isprint(c)) {
-			printf("%c ", c);
-		} else {
-			printf("%02X ", c);
+	while ((bytes_read = fread(buffer, 1, sizeof(buffer), file)) > 0) {
+		printf("%08zx  ", offset);
+
+		for (size_t i = 0; i < 16; i++) {
+			if (i < bytes_read) {
+				printf("%02x ", buffer[i]);
+			} else {
+				printf("   ");
+			}
+
+			if (i == 7) {
+				printf(" ");
+			}
 		}
+
+		printf(" |");
+		for (size_t i = 0; i < bytes_read; i++) {
+			printf("%c", isprint(buffer[i]) ? buffer[i] : '.');
+		}
+		printf("|\n");
+
+		offset += bytes_read;
 	}
 
-	printf("\n");
+	printf("%08zx\n", offset);
 
 	fclose(file);
 
