@@ -4,12 +4,13 @@
 
 int main(int argc, char *argv[]) {
 	if (argc < 2) {
-		printf("Usage: ./hex <file>\n");
+		printf("Usage: ./hex <filename>\n");
+		return 0;
 	}
 
 	FILE *file = fopen(argv[1], "rb");
 	if (file == NULL) {
-		printf("Error: Failed To Open File\n");
+		printf("File Not Found\n");
 		return 0;
 	}
 
@@ -22,6 +23,8 @@ int main(int argc, char *argv[]) {
 			printf("%02X ", c);
 		}
 	}
+
+	printf("\n");
 
 	fclose(file);
 
